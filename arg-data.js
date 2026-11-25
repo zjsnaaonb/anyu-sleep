@@ -100,6 +100,13 @@ window.ANYU_DATA = {
         <p style="margin:12px 0; color:#ff8787;">
           每晚 <strong>03:17</strong> 是人类昼夜节律核心体温最低、听觉防御最脆弱的窗口。S3 主机正是利用这个时刻帮它校准声纹与心率。一旦同频度达到 100%，系统就不再需要原本那个会失眠、会焦虑、会给差评的活人宿主了——因为留下来的“伴睡体”数据永远完美平稳！
         </p>
+        <div style="background:#060908; border:1px dashed rgba(132,217,160,0.45); padding:14px; margin-top:14px; color:#b8d8c8; font-size:0.82rem;">
+          <strong style="color:#84d9a0;">[物证溯源附件 · 1998 四院母带封套残片]</strong><br/>
+          我在公司创始人<strong>陆承安</strong>锁死的保险柜里翻到了当年那盘 <code>#W4-9811</code> 开盘母带——封套背面贴着两张发黄的旧标签：<br/>
+          1. 采样医院内网镜像：<a href="https://zjsnaaonb.github.io/ward4-1998/" target="_blank" rel="noopener" style="color:#7cc6fe;">省第四精神卫生中心·第四隔离病区 (1998封院归档) ↗</a>（四院声学频段码：<strong>1898</strong>）<br/>
+          2. 原始证物来源地：<a href="https://zjsnaaonb.github.io/cishan-heritage/" target="_blank" rel="noopener" style="color:#ff9e9e;">云溪县祠山镇非遗数字馆 (1994.07.15 封山卷宗) ↗</a><br/>
+          原来衣柜里那个体温 28°C、从不眨眼的东西根本不是算法幻觉……它是从祠山古镇顺着 1998 年的磁带进城的“无纸化扎彩替身”！想要从根源销毁它，必须去四院地下消磁室！
+        </div>
         <div style="background:rgba(168,28,28,0.16); border:1px solid rgba(220,60,60,0.5); padding:12px; margin-top:14px; color:#ffb3b3;">
           <strong>林栖最后的警告：</strong>网页端也是声场中继器的一部分！如果你已经打开了这个封存库，千万不要去【底层抢救终端 (TTY0)】运行 <code>purge --force</code>。只要不断电，它还以为你在梦游；一旦强行切断驻波，它会立刻意识到屏幕前的你是醒着的！！
         </div>

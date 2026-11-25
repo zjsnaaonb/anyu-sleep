@@ -80,6 +80,12 @@
 
     const snap = getTelemetrySnapshot();
     envEl.textContent = `终端环境自检：${snap.platform} (${snap.screen}) · 本地时刻 ${snap.localTime}`;
+    localStorage.setItem('anyu_visited', '1');
+
+    if (localStorage.getItem('trilogy_purified') === '1') {
+      document.getElementById('boot-badge-text').textContent =
+        '✓ 跨站联动生效：1998 四院一号母带已被强磁销毁 · 18.98Hz 驻波已静默';
+    }
 
     if (state.assimilated) {
       card.classList.add('assimilated');
@@ -95,6 +101,11 @@
       window.anyuAudio.init(false);
       window.anyuAudio.playTick(660);
       gate.classList.add('hidden');
+      if (localStorage.getItem('cishan_cursed') === '1' || localStorage.getItem('cishan_visited') === '1') {
+        setTimeout(() => {
+          showWhisper('[跨节点气味感应] 传感器在您指尖检出云溪县辰州朱砂残留……您已经去过祠山古镇点过睛了？');
+        }, 1800);
+      }
     });
 
     document.getElementById('enter-mild-btn').addEventListener('click', () => {
@@ -837,11 +848,21 @@
       if (lower === 'help') {
         appendTTY(
           `<span style="color:#9be2a8;">可用底层抢救指令：</span><br/>` +
-            `  <code>status</code>        - 查看 1804 节点与当前浏览终端谐振耦合率<br/>` +
-            `  <code>scan --behind</code> - 调用声场回波扫描观察者座椅/床铺后方盲区<br/>` +
-            `  <code>whois LQ-09</code>   - 查询首席架构师林栖最后登录状态<br/>` +
-            `  <code>play_raw 0317</code> - 播放未降噪枕边母带声纹<br/>` +
-            `  <code style="color:#ff6b6b;">purge --force</code> - [高危] 销毁 18.98Hz 伴睡母带并强制切断驻波`
+            `  <code>status</code>         - 查看 1804 节点与当前浏览终端谐振耦合率<br/>` +
+            `  <code>scan --behind</code>  - 调用声场回波扫描观察者座椅/床铺后方盲区<br/>` +
+            `  <code style="color:#7cc6fe;">trace --origin</code> - 追踪 18.98Hz 驻波母带的跨时代上游服务器节点<br/>` +
+            `  <code>whois LQ-09</code>    - 查询首席架构师林栖最后登录状态<br/>` +
+            `  <code>play_raw 0317</code>  - 播放未降噪枕边母带声纹<br/>` +
+            `  <code style="color:#ff6b6b;">purge --force</code>  - [高危] 销毁 18.98Hz 伴睡母带并强制切断驻波`
+        );
+      } else if (lower.startsWith('trace')) {
+        window.anyuAudio.playStaticBurst(0.2, 0.5);
+        appendTTY(
+          `<span style="color:#7cc6fe;">[TRACEROUTE 18.98Hz CARRIER WAVE]</span><br/>` +
+            `  hop 1: <code>hz-1804.anyu-sleep.cn</code> (杭州滨江样板间 · 延迟 1.2ms)<br/>` +
+            `  hop 2: <a href="https://zjsnaaonb.github.io/ward4-1998/" target="_blank" rel="noopener" style="color:#84d9a0;">ward4-1998.psych-archive.internal ↗</a> (1998 省第四精神卫生中心·第四隔离病区 | 频段密令: <strong>1898</strong>)<br/>` +
+            `  hop 3: <a href="https://zjsnaaonb.github.io/cishan-heritage/" target="_blank" rel="noopener" style="color:#ff9e9e;">cishan-1994.yunxi-telecom.dead ↗</a> (1994 云溪县祠山镇断电邮电所铜线 · 物理源头)<br/>` +
+            `  <span style="color:#ffd166;">结论：单靠切断本机无法消灭源头，请点击上方 hop 2 前往【1998 四院内网】启动地下消磁总闸！</span>`
         );
       } else if (lower === 'status') {
         appendTTY(
