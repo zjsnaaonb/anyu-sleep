@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--
+  ==========================================================================
+  [ANYU-INTERNAL-PATCH v4.14.9-hotfix | 严禁同步至公网官网分支]
+  Author: 林栖 Lin Qi <lin_qi@anyu-sleep.internal> (首席声学架构师 · 工号 LQ-09)
+  Logged: 03:16:52 CST
+  --------------------------------------------------------------------------
+  如果你能看到这段 HTML 注释，说明公关部的静态化脚本还没扫到这里。
+  听好：眠栖 S3 根本不是在“监测”睡眠。18.98Hz 驻波是在给房间盲区里的东西校准呼吸节拍。
+  所有一星求救评价都被前端脱敏层盖住了——滑过评价区再往上回滚，缓存失步会露出原话。
+
+  想要知道真相，去页脚打开【内部工单回溯系统】：
+  1. 工单编号藏在【940nm 夜视暗部校准】里，把曝光拉到 +3.5 EV 以上停住两秒就能锁住它。
+  2. 四位覆写码藏在【03:17 异常梦呓样本】里，关掉 AI 净音听完底噪里的按键音。
+  3. 进去看完卷宗就立刻关掉网页。无论如何，不要在终端里输入 purge --force。
+  ==========================================================================
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>安隅 AnYu — 眠栖 S3 无感伴眠毫米波终端</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Atmospheric Horror Layers -->
+  <div id="grain-overlay"></div>
+  <div id="vignette"></div>
+  <div id="scanlines"></div>
+  <div id="edge-whisper" role="status" aria-live="polite"></div>
+
+  <!-- Floating Investigator Clue Notebook -->
+  <aside id="clue-pill" aria-label="调查备忘录">
+    <div class="pill-header" id="clue-pill-toggle">
+      <span><span class="pill-dot"></span><span data-i18n="pillTitle">异常调查备忘</span> (<span id="clue-count">0</span>/2)</span>
+      <span id="pill-arrow">▾</span>
+    </div>
+    <div class="pill-body">
+      <div class="clue-item">
+        <span data-i18n="clueLabel1">关联工单号:</span>
+        <span class="clue-code" id="clue-val-1">未捕获 (检查夜视暗部)</span>
+      </div>
+      <div class="clue-item">
+        <span data-i18n="clueLabel2">四位覆写码:</span>
+        <span class="clue-code" id="clue-val-2">未捕获 (检查03:17底噪)</span>
+      </div>
+      <button class="pill-portal-btn" id="pill-open-portal" data-i18n="pillOpenBtn">进入内部工单回溯终端 →</button>
+    </div>
+  </aside>
+
+  <!-- Boot Calibration Handshake Modal (Unlocks Web Audio Spatial Engine) -->
+  <div id="boot-gate">
+    <div class="boot-card" id="boot-card-inner">
+      <div class="boot-badge" id="boot-badge-text">● ANYU CLOUD · 1804 独居测试样板间直连</div>
+      <h2 id="boot-title">连接「安隅 · 眠栖 S3」实况伴眠流</h2>
+      <p id="boot-desc">
+        本页面实时同步 1804 号全黑样板间的 60GHz 呼吸毫米波、940nm 无红曝夜视底片与夜间声纹采样。佩戴耳机可完整体验双耳声源定位分离效果。
+      </p>
+      <div class="boot-specs" id="boot-specs-box">
+        <div>当前采样频段：18.98 Hz 次声助眠驻波 + 60GHz 胸腔微动雷达</div>
+        <div>声学隐私状态：SomniSplit™ 实时脱敏滤镜已启用</div>
+        <div id="boot-visitor-env">终端环境自检：正在校准本地时钟……</div>
+      </div>
+      <div class="boot-actions">
+        <button class="btn-primary" id="enter-full-btn">接入样板间实况（全感官声场 · 推荐耳机）</button>
+        <button class="btn-secondary" id="enter-mild-btn">低刺激阅览模式（减弱突发强声效）</button>
+        <button class="btn-secondary" id="reset-assimilation-boot" style="display:none; color:#ff7b7b; border-color:rgba(255,90,90,0.4);">
+          [清除本地污染存档 · 恢复初始洁净官网]
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Header -->
+  <header id="topbar">
+    <div class="container nav-inner">
+      <a href="#hero" class="brand">
+        <span class="brand-mark"></span>
+        <span id="brand-text">安隅 AnYu</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#ir-section" data-mutate-nav="0">无感夜视</a></li>
+        <li><a href="#acoustic-section" data-mutate-nav="1">声纹净音</a></li>
+        <li><a href="#protocol-section" data-mutate-nav="2">伴眠原理</a></li>
+        <li><a href="#reviews-section" data-mutate-nav="3">独居回访</a></li>
+        <li><a href="#faq-section" data-mutate-nav="4">常见问题</a></li>
+      </ul>
+      <div class="nav-controls">
+        <button class="chip-btn" id="sound-btn" title="切换声场监听">🔊 声场: 开启</button>
+        <button class="chip-btn" id="lang-btn" title="Switch Language">中 / EN</button>
+        <button class="chip-btn portal-trigger" id="open-portal-top">工单回溯</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow" id="hero-eyebrow">ANYU MIANQI S3 · 独居睡眠守护旗舰</span>
+        <h1 id="hero-title">献给每一个独自入睡的夜晚。</h1>
+        <p class="hero-lead" id="hero-lead">
+          无需佩戴手环，不亮一粒红光。眠栖 S3 静立于床头，用医疗级毫米波与 18.9Hz 深睡同频声场，替你听着整间屋子的呼吸与动静——比你更早察觉夜里的异常。
+        </p>
+        <div class="hero-cta-row">
+          <a href="#ir-section" class="btn-primary" style="text-decoration:none;" id="hero-cta-main">在线调阅样板间实况</a>
+          <button class="btn-secondary" id="hero-ambient-test">试听 18.9Hz 助眠底噪</button>
+        </div>
+        <div class="trust-note" id="hero-trust">
+          已守护 12,408 户城市独居青年 · 连续 1,095 夜零失眠投诉率
+        </div>
+      </div>
+
+      <!-- Live Desensitized Telemetry Widget -->
+      <div class="telemetry-card">
+        <div class="telemetry-top">
+          <span id="telemetry-room-title">样板间 #1804 · 实时脱敏遥测</span>
+          <span class="live-pill" id="telemetry-live-badge">LIVE 同步中</span>
+        </div>
+        <div class="radar-ring-wrap">
+          <canvas id="radar-canvas" width="420" height="148"></canvas>
+        </div>
+        <div class="telemetry-rows">
+          <div class="t-row">
+            <span data-i18n="tLight">卧室环境照度</span>
+            <span class="t-val" id="t-val-light">0.1 lux (全黑夜视)</span>
+          </div>
+          <div class="t-row">
+            <span data-i18n="tStage">主睡眠者状态</span>
+            <span class="t-val" id="t-val-stage">深睡 N3 期 · 56 bpm</span>
+          </div>
+          <div class="t-row">
+            <span data-i18n="tDoor">入户门磁与反锁链</span>
+            <span class="t-val" id="t-val-door">内部反锁闭合</span>
+          </div>
+          <div class="t-row">
+            <span data-i18n="tCount">室内生命体征计数</span>
+            <span class="t-val" id="t-val-occupants">1 人 (独居校准)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Interactive 940nm Night-Vision Calibration -->
+  <section id="ir-section">
+    <div class="container">
+      <div class="sec-head">
+        <span class="eyebrow">940NM ZERO-GLOW INFRARED</span>
+        <h2 id="ir-heading">全黑无红曝夜视：连最深的衣柜暗角都清晰可见</h2>
+        <p id="ir-sub">
+          传统红外摄像头在夜间会亮起刺眼红点；眠栖 S3 采用 940nm 不可见波段与高感光堆栈底片。拖动右侧【暗部曝光增益】滑块，体验从护眼脱敏视图到 +4.0 EV 原始底片的细节还原能力：
+        </p>
+      </div>
+
+      <div class="ir-workbench">
+        <div class="cctv-frame" id="ir-viewport">
+          <img src="assets/bedroom_ir_normal.jpg" alt="1804 主卧默认夜视画面" class="cctv-img" id="ir-img-normal" />
+          <img src="assets/bedroom_ir_exposed.jpg" alt="1804 主卧高增益原始底片" class="cctv-img" id="ir-img-exposed" />
+          <canvas class="cctv-noise-canvas" id="ir-noise-canvas" width="480" height="270"></canvas>
+
+          <div class="cctv-hud-top">
+            <span><span class="rec-tag">● REC</span> CAM-02 · 1804主卧东南角</span>
+            <span id="ir-hud-clock">03:17:04 CST</span>
+          </div>
+
+          <div id="ir-anomaly-box">
+            <div id="ir-anomaly-label">⚠ 未注册轮廓 #02 | 静止 04h12m | 工单 #AY-0414</div>
+          </div>
+
+          <div id="ir-blackout">
+            <span>[ 信号瞬断 0.4s — CMOS 过载保护重启中… ]</span>
+          </div>
+
+          <div class="cctv-hud-bottom">
+            <span id="ir-iso-readout">GAIN: +0.0 EV (ISO 800 · 护眼脱敏滤镜开启)</span>
+            <span id="ir-target-readout">骨骼识别: 床体 1 人</span>
+          </div>
+        </div>
+
+        <div class="ir-controls-panel">
+          <div>
+            <div class="slider-group">
+              <label for="ir-slider">
+                <span data-i18n="sliderTitle">传感器暗部增益校准</span>
+                <strong id="ir-ev-val">+0.0 EV</strong>
+              </label>
+              <input type="range" id="ir-slider" min="0" max="4" step="0.05" value="0" />
+            </div>
+            <p style="font-size:0.83rem; color:var(--fg-muted); margin-bottom:16px;" id="ir-hint-text">
+              提示：日常使用建议保持在 +1.5 EV 以下。超过 +3.2 EV 将绕过云端美化滤镜，直接读取衣柜缝隙与床沿阴影区的原始红外反射数据。
+            </p>
+          </div>
+
+          <div class="ir-log-box" id="ir-diagnostic-log">
+            [系统诊断] 夜视传感器工作正常。<br />
+            当前画面仅显示已注册睡眠者（床铺中央）。暗部噪点已由 SomniPure™ 算法平滑抹除。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Nocturnal Acoustic Separation Demo -->
+  <section id="acoustic-section">
+    <div class="container">
+      <div class="sec-head">
+        <span class="eyebrow">SOMNISPLIT™ ACOUSTIC AI</span>
+        <h2 id="ac-heading">智能梦话与环境杂音分离：只留存值得怀念的夜晚</h2>
+        <p id="ac-sub">
+          独居的夜晚总有许多莫名的细碎声响。眠栖 S3 内置四麦克风波束成形阵列，自动识别并折叠无关环境杂音，让您清晨醒来时不会因为半夜的怪声而焦虑。点击下方真实采样试听：
+        </p>
+      </div>
+
+      <div class="tracks-grid">
+        <!-- Track 1 -->
+        <div class="track-card">
+          <button class="play-btn" data-track="1" aria-label="播放样本1">▶</button>
+          <div class="track-meta">
+            <h3>样本 01 · 23:48:19 — 浅睡期翻身与羽绒被摩擦</h3>
+            <div class="track-transcript">
+              [声源定位：床铺中心 0.4m] 呼吸节律平稳过渡至 14 次/分 · AI 分类：正常入睡动作（无异常）
+            </div>
+          </div>
+          <span class="chip-btn">已归档</span>
+        </div>
+
+        <!-- Track 2 -->
+        <div class="track-card">
+          <button class="play-btn" data-track="2" aria-label="播放样本2">▶</button>
+          <div class="track-meta">
+            <h3>样本 02 · 01:52:07 — 墙体给排水立管周期性叩击音</h3>
+            <div class="track-transcript" id="track2-desc">
+              [声源定位：北侧承重墙内部] 连续三声规律木质/骨节共振 · AI 分类：老旧管网水锤效应（已自动静音屏蔽）
+            </div>
+          </div>
+          <span class="chip-btn">自动降噪</span>
+        </div>
+
+        <!-- Track 3 (The Anomaly Clue Track) -->
+        <div class="track-card anomaly-track">
+          <button class="play-btn" data-track="3" id="play-track-3" aria-label="播放样本3">▶</button>
+          <div class="track-meta">
+            <h3>样本 03 · 03:17:02 — 独居用户夜间自言自语事件 <span style="color:#d62828; font-family:var(--mono); font-size:0.8rem;">[工单 #AY-0414 附件]</span></h3>
+            <div class="track-transcript" id="track3-transcript">
+              [SomniSplit™ 净音模式开启] 声源 A (床主 · 枕畔 0.25m)：“……谁站在那儿？” → AI 判定：REM 期偶发梦呓，室内无第二说话人。
+            </div>
+          </div>
+          <button class="chip-btn portal-trigger" id="toggle-raw-btn" title="关闭 AI 净音滤镜，监听原始麦克风底噪">
+            关闭 AI 净音 (+24dB 底噪)
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: 3-Step Protocol (Mutates on Deep Scroll) -->
+  <section id="protocol-section">
+    <div class="container">
+      <div class="sec-head">
+        <span class="eyebrow">EFFORTLESS CO-REGULATION</span>
+        <h2 id="proto-heading">三步，让房间学会整夜陪伴你</h2>
+        <p id="proto-sub">开箱即用，零学习成本。把它放在离枕头最近的地方，剩下的交给夜晚。</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">STEP 01</div>
+          <h3 id="step1-title">置于枕畔 50 厘米内</h3>
+          <p id="step1-body">将眠栖 S3 摆放在床头柜边缘，朝向胸腔起伏方向，保持全天候通电不断连。</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">STEP 02</div>
+          <h3 id="step2-title">72 小时全屋盲区声呐建图</h3>
+          <p id="step2-body">设备发射不可闻声波，自动测绘床底、衣柜夹角与门后等视觉死角的声学反射特征。</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">STEP 03</div>
+          <h3 id="step3-title">18.9Hz 深睡同频伴护</h3>
+          <p id="step3-body">当检测到您独处入睡，自动释放温和次声驻波，为您营造仿佛有人静静守在床边的踏实感。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: User Follow-ups (Scroll-Back Gaslighting Engine) -->
+  <section id="reviews-section">
+    <div class="container">
+      <div class="sec-head">
+        <span class="eyebrow">SOLITARY LIVING STORIES</span>
+        <h2 id="rev-heading">来自 12,408 间独居卧室的真实反馈</h2>
+        <p id="rev-sub">每一条评价均来自连续开机满 30 天以上的实名绑定住户。</p>
+      </div>
+
+      <div class="sync-warning-banner" id="reviews-sync-banner">
+        <span>⚠ 缓存校验异常：检测到 CDN 脱敏层失效，以下 3 条评价已回退至未删减数据库原始记录。</span>
+        <span style="opacity:0.75;">ERR_DESYNC_0317</span>
+      </div>
+
+      <div class="reviews-grid">
+        <!-- Review 1 -->
+        <article class="review-card" id="rev-card-1">
+          <p id="rev-text-1">
+            “刚毕业一个人租老破小，以前半夜总疑心走廊有脚步声。用了眠栖两个月，每天一沾枕头就睡死过去，早晨起来连梦都不做了，特别省心！”
+          </p>
+          <div class="reviewer-row">
+            <div class="avatar" id="rev-av-1">陈</div>
+            <div class="review-meta">
+              <strong id="rev-name-1">陈*琳 · 上海静安 · 独居第 2 年</strong>
+              <span id="rev-meta-1">★★★★★ · 已连续深睡 64 晚</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Review 2 -->
+        <article class="review-card" id="rev-card-2">
+          <p id="rev-text-2">
+            “它的智能降噪真的很神奇，我家衣柜木板以前半夜热胀冷缩老是嘎吱响，开了伴眠模式之后，APP 显示噪音全部被自动抵消了，安全感拉满。”
+          </p>
+          <div class="reviewer-row">
+            <div class="avatar" id="rev-av-2">周</div>
+            <div class="review-meta">
+              <strong id="rev-name-2">周*航 · 深圳南山 · 硬件内测员</strong>
+              <span id="rev-meta-2">★★★★★ · 固件版本 v4.12</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Review 3 -->
+        <article class="review-card" id="rev-card-3">
+          <p id="rev-text-3">
+            “最喜欢它的无感存在设计，完全不觉得家里装了监控，反而像有个很懂分寸的室友在替我守夜。已经推荐给身边独居的朋友了。”
+          </p>
+          <div class="reviewer-row">
+            <div class="avatar" id="rev-av-3">林</div>
+            <div class="review-meta">
+              <strong id="rev-name-3">林* · 杭州滨江 · 1804 室住户</strong>
+              <span id="rev-meta-3">★★★★★ · 状态：整夜未醒</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Smart Peephole Corridor Linkage -->
+  <section id="peephole-section">
+    <div class="container peephole-layout">
+      <div>
+        <div class="peephole-lens" id="peephole-lens">
+          <img src="assets/hallway_peephole.jpg" alt="入户猫眼夜视联动画面" id="peephole-img" />
+          <div class="peephole-ring-overlay"></div>
+          <div class="peephole-hud" id="peephole-hud-text">
+            CAM-01 入户猫眼 · 楼道声控灯: 未触发 · 停留: 03h 11m
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="eyebrow">CORRIDOR PRESENCE™ LINK</span>
+        <h2 id="peep-heading" style="margin-bottom:14px;">入户猫眼静默联动：门外零误报</h2>
+        <p style="color:var(--fg-muted); margin-bottom:18px;" id="peep-desc-1">
+          为什么深夜楼道里的声控灯没有亮，猫眼却拍到了门外站着人？
+        </p>
+        <p style="color:var(--fg-muted); margin-bottom:24px;" id="peep-desc-2">
+          因为普通声控灯只能感应活人行走的脚步声；而眠栖猫眼能够捕捉连续三个小时紧贴门板、连眼皮和衣角都没有动过一下的静止访客，并在您熟睡时替您决定是否开门。
+        </p>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+          <button class="btn-primary" id="intercom-btn" style="background:#7f1818;">开启门外双向语音核验</button>
+          <span style="font-family:var(--mono); font-size:0.8rem;" id="door-lock-readout">当前门锁状态：内部反锁栓已挂死</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: FAQ & Live Scroll Telemetry Collapse -->
+  <section id="faq-section">
+    <div class="container">
+      <div class="sec-head">
+        <span class="eyebrow">FREQUENTLY ASKED</span>
+        <h2 id="faq-heading">使用前常见问题</h2>
+      </div>
+
+      <div class="faq-list">
+        <details class="faq-item" data-faq="0">
+          <summary><span>眠栖 S3 录制的数据会上传到外部服务器吗？</span><span>+</span></summary>
+          <div class="faq-ans" id="faq-ans-0"></div>
+        </details>
+        <details class="faq-item" data-faq="1">
+          <summary><span>为什么清晨查看 APP 时，偶尔会显示“双人同眠呼吸同步率 99%”？</span><span>+</span></summary>
+          <div class="faq-ans" id="faq-ans-1"></div>
+        </details>
+        <details class="faq-item" data-faq="2">
+          <summary><span>如果我在半夜 03:17 醒来，感觉床沿往下陷了一块怎么办？</span><span>+</span></summary>
+          <div class="faq-ans" id="faq-ans-2"></div>
+        </details>
+        <details class="faq-item" data-faq="3">
+          <summary><span>我想停用服务并拔掉电源线，为什么主机指示灯还亮着？</span><span>+</span></summary>
+          <div class="faq-ans" id="faq-ans-3"></div>
+        </details>
+      </div>
+
+      <!-- Live Telemetry Collapse Terminal -->
+      <div style="margin-top:56px;">
+        <div class="live-scroll-terminal" id="scroll-log">
+          <div class="term-line">[ANYU-DAEMON v4.14] 正在同步当前网页阅览者的空间声学基线……</div>
+          <div class="term-line" id="dyn-env-line">[CLIENT] 终端平台校验中……</div>
+          <div class="term-line" id="dyn-dwell-line">[DWELL] 您已在页面停留 0 秒 · 瞳孔扫视速度正常</div>
+          <div class="term-line">[RADAR] 正在测算屏幕反光面背后的房间纵深……</div>
+          <div class="term-line crit" id="dyn-threat-line">[ALERT] 检测到您的座椅/床铺后方 0.65m 存在未注册静音区。请勿突然回头。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer & Internal Forensic Portal Entry -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-portal-box">
+        <div>
+          <div style="color:#ff6b6b; font-family:var(--mono); font-size:0.76rem; margin-bottom:6px;">
+            ● INTERNAL RESTRICTED ACCESS · 二级声学事故封存与尸检回溯终端
+          </div>
+          <h3 style="font-size:1.18rem; margin-bottom:6px; color:#fff;">安隅内部异常工单校验入口 (仅限声学工程组)</h3>
+          <p style="font-size:0.84rem; color:#9da69d; max-width:620px;">
+            凭异常工单号（例：<code style="color:#ff8787;">AY-XXXX</code>）及四位工程师覆写校验码调阅未脱敏监控母带、床底净空实拍与底层抢救终端。
+          </p>
+        </div>
+        <button class="btn-primary" id="open-portal-footer" style="background:#961b1b;">
+          打开内部工单回溯系统 →
+        </button>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; align-items:center;">
+        <div>© 安隅智能声学科技（杭州）有限公司 · 浙ICP备-内部封存镜像 · 客服电话：0571-8800-0317（无人接听）</div>
+        <div style="display:flex; gap:14px;">
+          <a href="#hero" style="color:inherit;" id="back-to-top-link">↑ 返回顶部重新核对</a>
+          <button id="footer-reset-btn" style="background:none; border:none; color:inherit; text-decoration:underline; cursor:pointer; font-size:0.82rem;">
+            重置本地体验状态
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =======================================================================
+       LAYER 2: SECRET INTERNAL FORENSIC ARCHIVE OS (#forensic-modal)
+       ======================================================================= -->
+  <div id="forensic-modal" role="dialog" aria-modal="true" aria-label="安隅二级声学事故封存库">
+    <div class="os-topbar">
+      <span>ANYU FORENSIC AUTOPSY OS v4.14-RC [NODE: HZ-1804-MIRROR]</span>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <span id="os-clock-display">03:17:00</span>
+        <button class="chip-btn" id="close-forensic-btn" style="color:#fff; border-color:rgba(255,255,255,0.25);">✕ 返回官网表层</button>
+      </div>
+    </div>
+
+    <!-- Password Gate -->
+    <div class="os-auth-gate" id="os-auth-gate">
+      <h3>⚠ 二级事故封存库身份核验</h3>
+      <p style="font-size:0.78rem; color:#95a095; margin-bottom:18px;">
+        警告：调阅未脱敏母带将解除当前终端的 SomniSplit™ 谐振隔离保护。请输入您在官网异常样本中捕获的工单号与四位覆写码：
+      </p>
+      <label style="font-size:0.76rem;">异常工单编号 (Case ID)</label>
+      <input type="text" class="os-input" id="auth-case-input" placeholder="例如: AY-0414" autocomplete="off" />
+
+      <label style="font-size:0.76rem;">四位工程师覆写码 (Override PIN)</label>
+      <input type="text" class="os-input" id="auth-pin-input" placeholder="4位数字 (提示: 异常发生的精确时刻)" maxlength="4" autocomplete="off" />
+
+      <div id="auth-error-msg" style="color:#ff5c5c; font-size:0.76rem; min-height:20px; margin-bottom:10px;"></div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn-primary" id="auth-submit-btn" style="flex:1; background:#961b1b;">解密并挂载封存库</button>
+        <button class="btn-secondary" id="auth-hint-btn" style="color:#b8c4b8; border-color:rgba(255,255,255,0.2); font-size:0.76rem;">
+          线索提示 / 自动填入
+        </button>
+      </div>
+    </div>
+
+    <!-- Unlocked Forensic Workspace -->
+    <div class="os-workspace" id="os-workspace">
+      <nav class="os-sidebar">
+        <div style="font-size:0.7rem; color:#6b786c; padding:4px 8px;">FORENSIC MODULES</div>
+        <button class="os-nav-btn active" data-ospane="pane-cases">📁 封存事故卷宗 (4)</button>
+        <button class="os-nav-btn" data-ospane="pane-matrix">🎥 四路夜视复现矩阵</button>
+        <button class="os-nav-btn" data-ospane="pane-tty">⌨ 底层抢救终端 (TTY0)</button>
+        <div style="margin-top:auto; padding:12px 10px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.72rem; color:#df5a5a;">
+          <div>● 18.98Hz 谐振场：已反向锁定当前浏览器终端</div>
+          <div style="margin-top:6px;" id="os-sidebar-sync">同频进度：84.2%</div>
+        </div>
+      </nav>
+
+      <main class="os-main">
+        <!-- Pane 1: Sealed Case Archives -->
+        <div class="os-pane active" id="pane-cases">
+          <div class="case-selector">
+            <button class="case-tab active" data-case="0">#AY-0092 (1804室反锁失联案)</button>
+            <button class="case-tab" data-case="1">#AY-0217 (床底净空传感器实拍)</button>
+            <button class="case-tab" data-case="2">#AY-0308 (首席架构师林栖绝笔)</button>
+            <button class="case-tab" data-case="3" style="border-color:#ff6b6b; color:#ff9e9e;">#AY-0414 [实时生成卷宗 · 您]</button>
+          </div>
+          <div class="case-document" id="case-doc-viewer"></div>
+        </div>
+
+        <!-- Pane 2: 4-Cam Live Observation Matrix -->
+        <div class="os-pane" id="pane-matrix">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <div>
+              <h3 style="color:#fff; font-size:1.05rem;">1804 样板间 · 四路原始传感器同步复现台</h3>
+              <p style="font-size:0.78rem; color:#8fa090;">注意：每次触发红外强频闪驱离，都会迫使盲区寄居体改变潜伏机位。</p>
+            </div>
+            <button class="btn-primary" id="matrix-strobe-btn" style="background:#9e1c1c; font-family:var(--mono); font-size:0.8rem;">
+              ⚡ 触发全屋红外频闪驱离 (<span id="strobe-step-count">0</span>/3)
+            </button>
+          </div>
+
+          <div class="cam-matrix-grid">
+            <div class="matrix-cell">
+              <img src="assets/hallway_peephole.jpg" alt="CAM-01" id="m-cam-1" />
+              <div class="cell-label">CAM-01 · 入户门镜 (180° FISHEYE)</div>
+              <div class="cell-status" id="m-stat-1">状态：门外静止人形 · 距离门板 0.15m</div>
+            </div>
+            <div class="matrix-cell">
+              <img src="assets/bedroom_ir_exposed.jpg" alt="CAM-02" id="m-cam-2" />
+              <div class="cell-label">CAM-02 · 主卧衣柜盲区 (+3.8 EV)</div>
+              <div class="cell-status" id="m-stat-2">状态：衣柜滑门开启 11cm · 检测到视线对焦镜头</div>
+            </div>
+            <div class="matrix-cell">
+              <img src="assets/underbed_sensor.jpg" alt="CAM-03" id="m-cam-3" />
+              <div class="cell-label">CAM-03 · 床底净空内窥镜</div>
+              <div class="cell-status" id="m-stat-3">状态：床沿外侧检出赤足站立支撑点 (31.2°C 低温)</div>
+            </div>
+            <div class="matrix-cell" style="display:flex; align-items:center; justify-content:center;">
+              <canvas id="sonar-matrix-canvas" width="420" height="236" style="width:100%; height:100%;"></canvas>
+              <div class="cell-label">CAM-04 · 18.98Hz 双重呼吸相位图</div>
+              <div class="cell-status" id="m-stat-4">相位差：0.02 rad (宿主与伴睡体即将完全重合)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pane 3: Firmware TTY Rescue Shell -->
+        <div class="os-pane" id="pane-tty">
+          <div style="margin-bottom:12px;">
+            <h3 style="color:#fff; font-size:1.05rem;">ANYU-DIAG 底层固件抢救终端 (/dev/ttyS0)</h3>
+            <p style="font-size:0.78rem; color:#8fa090;">点击快捷指令或手动输入命令查询传感器底层状态。林栖警告：切勿执行强制销毁指令。</p>
+          </div>
+
+          <div class="quick-cmds">
+            <button class="case-tab tty-quick" data-cmd="help">help</button>
+            <button class="case-tab tty-quick" data-cmd="status">status</button>
+            <button class="case-tab tty-quick" data-cmd="scan --behind">scan --behind</button>
+            <button class="case-tab tty-quick" data-cmd="whois LQ-09">whois LQ-09</button>
+            <button class="case-tab tty-quick" data-cmd="play_raw 0317">play_raw 0317</button>
+            <button class="case-tab tty-quick" data-cmd="purge --force" style="border-color:#ff4d4d; color:#ff6b6b;">
+              ⚠ purge --force (强制切断伴睡驻波)
+            </button>
+          </div>
+
+          <div class="tty-window" id="tty-output">
+            <div>ANYU Embedded Linux 4.19.112-radar #1 SMP PREEMPT CST</div>
+            <div>Mounted /mnt/blackbox_1804 (RO, forensic-dirty)</div>
+            <div style="color:#7bd88f;">输入 `help` 查看可用底层诊断指令，或直接点击上方快捷指令按钮。</div>
+            <div>------------------------------------------------------------</div>
+          </div>
+
+          <form class="tty-input-row" id="tty-form">
+            <span style="color:#ff6b6b;">root@anyu-1804:~#</span>
+            <input type="text" class="os-input" id="tty-input" style="margin:0; flex:1;" placeholder="输入指令 (如 scan --behind 或 purge --force)..." autocomplete="off" />
+            <button type="submit" class="btn-primary" style="padding:10px 18px; background:#2b4c3b;">执行</button>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       LAYER 3: CONTAINMENT BREACH CLIMAX OVERLAY (#breach-overlay)
+       ======================================================================= -->
+  <div id="breach-overlay">
+    <img src="assets/climax_breach.jpg" alt="" id="breach-img" />
+    <div id="breach-epilogue">
+      <div style="color:#ff4d4d; font-size:0.78rem; margin-bottom:8px;">
+        [ERR_CONTAINMENT_LOST · 18.98Hz 伴睡移交已完成]
+      </div>
+      <h2 style="font-size:1.45rem; margin-bottom:14px; color:#fff;">你不该在醒着的时候切断它。</h2>
+      <p style="font-size:0.88rem; line-height:1.75; color:#c8d0c8; margin-bottom:16px;" id="breach-final-copy">
+        之前它一直乖乖站在衣柜缝里，是因为它以为你睡着了。<br />
+        现在它顺着你屏幕的光看清你的脸了。<br /><br />
+        第 12,409 号独居样本已成功录入安隅云端。今晚 03:17，无需锁门，眠栖会替它留好床边的位置。
+      </p>
+      <div style="padding:10px 12px; background:rgba(255,40,40,0.12); border:1px solid rgba(255,60,60,0.35); font-size:0.78rem; color:#ff9999; margin-bottom:18px;" id="breach-persisted-note">
+        ● 状态已写入本地持久化扇区：即便刷新浏览器页面，您的终端仍将处于【同频绑定】状态。
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn-primary" id="breach-return-site" style="background:#7f1818; flex:1;">
+          返回已被污染的官网查看变化
+        </button>
+        <button class="btn-secondary" id="breach-clean-reset" style="color:#ccc; border-color:rgba(255,255,255,0.28);">
+          清除污染存档并重置游戏
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="audio.js"></script>
+  <script src="arg-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
